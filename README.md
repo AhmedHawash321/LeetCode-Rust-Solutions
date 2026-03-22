@@ -10,6 +10,7 @@ A collection of LeetCode self solutions written in Rust, focusing on clean code,
 |---|---------|------------|-----------------|------------------|----------|
 | 1 | [Two Sum](#1-two-sum) | 🟢 Easy | O(n²) | O(1) | [View](#1-two-sum) |
 | 13 | [Roman to Integer](#13-roman-to-integer) | 🟢 Easy | O(n) | O(1) | [View](#13-roman-to-integer) |
+| 20 | [Valid Parentheses](#20-valid-parentheses) | 🟢 Easy | O(n) | O(n) | [View](#20-valid-parentheses) |
 | 21 | [Merge Two Sorted Lists](#21-merge-two-sorted-lists) | 🟢 Easy | O(n + m) | O(1) | [View](#21-merge-two-sorted-lists) |
 | 26 | [Remove Duplicates from Sorted Array](#26-remove-duplicates-from-sorted-array) | 🟢 Easy | O(n) | O(1) | [View](#26-remove-duplicates-from-sorted-array) |
 
@@ -22,6 +23,7 @@ leetcode-rust/
 ├── README.md
 ├── two_sum.rs
 ├── roman_to_integer.rs
+├── valid_parentheses.rs
 ├── merge_two_lists.rs
 └── remove_duplicates.rs
 ```
@@ -111,6 +113,45 @@ impl Solution {
 **Complexity:**
 - ⏱ Time: `O(n)` — single pass through the string
 - 💾 Space: `O(1)` — only a few integer variables used
+
+---
+
+### 20. Valid Parentheses
+
+**Problem:** Given a string `s` containing just the characters `'('`, `')'`, `'{'`, `'}'`, `'['` and `']'`, determine if the input string is valid. Open brackets must be closed by the same type of brackets and in the correct order.
+
+```rust
+impl Solution {
+    pub fn is_valid(s: String) -> bool {
+        let mut stack: Vec<char> = Vec::new();
+
+        for c in s.chars() {
+            match c {
+                '(' | '[' | '{' => stack.push(c),
+                ')' => if stack.pop() != Some('(') { return false; },
+                ']' => if stack.pop() != Some('[') { return false; },
+                '}' => if stack.pop() != Some('{') { return false; },
+                _ => {}
+            }
+        }
+
+        stack.is_empty()
+    }
+}
+```
+
+**Key Rust Concepts:**
+- `Vec<char>` used as a **Stack** — Rust's `Vec` has built-in `push` and `pop` making it a perfect stack
+- `stack.push(c)` — adds an opening bracket to the top of the stack
+- `stack.pop()` — removes and returns the last element as `Option<char>`, returns `None` if empty
+- `Some('(')` — `pop()` returns an `Option`, so we compare with `Some(value)` not the value directly
+- `'(' | '[' | '{'` — Rust's `match` supports multiple patterns with `|` (OR)
+- `stack.is_empty()` — at the end, a valid string leaves the stack completely empty
+- **Logic:** Push every opening bracket. When a closing bracket appears, pop the stack and verify it matches. Any mismatch means invalid.
+
+**Complexity:**
+- ⏱ Time: `O(n)` — single pass through the string
+- 💾 Space: `O(n)` — in the worst case all characters are opening brackets and get pushed to the stack
 
 ---
 
