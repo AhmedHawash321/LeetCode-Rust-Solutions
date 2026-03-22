@@ -1,6 +1,6 @@
-# 🦀 LeetCode Problem Solving with Rust
+# 🦀 LeetCode-Rust_solutions
 
-A collection of LeetCode solutions written in Rust, focusing on clean code, performance, and detailed explanations of Rust-specific concepts used in each solution.
+A collection of LeetCode self solutions written in Rust, focusing on clean code, performance, and detailed explanations of Rust-specific concepts used in each solution.
 
 ---
 
