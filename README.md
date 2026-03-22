@@ -19,11 +19,9 @@ A collection of LeetCode solutions written in Rust, focusing on clean code, perf
 ```
 leetcode-rust/
 ├── README.md
-└── src/
-    └── easy/
-        ├── two_sum.rs
-        ├── roman_to_integer.rs
-        └── merge_two_lists.rs
+├── two_sum.rs
+├── roman_to_integer.rs
+└── merge_two_lists.rs
 ```
 
 ---
@@ -177,11 +175,11 @@ Rust is an unusual but powerful choice for competitive problem solving:
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/leetcode-rust.git
+git clone https://github.com/ahmedhawash321/leetcode-rust.git
 cd leetcode-rust
 
 # Run a specific solution
-rustc src/easy/two_sum.rs && ./two_sum
+rustc two_sum.rs && ./two_sum
 ```
 
 ---
