@@ -11,6 +11,7 @@ A collection of LeetCode self solutions written in Rust, focusing on clean code,
 | 1 | [Two Sum](#1-two-sum) | 🟢 Easy | O(n²) | O(1) | [View](#1-two-sum) |
 | 13 | [Roman to Integer](#13-roman-to-integer) | 🟢 Easy | O(n) | O(1) | [View](#13-roman-to-integer) |
 | 21 | [Merge Two Sorted Lists](#21-merge-two-sorted-lists) | 🟢 Easy | O(n + m) | O(1) | [View](#21-merge-two-sorted-lists) |
+| 26 | [Remove Duplicates from Sorted Array](#26-remove-duplicates-from-sorted-array) | 🟢 Easy | O(n) | O(1) | [View](#26-remove-duplicates-from-sorted-array) |
 
 ---
 
@@ -21,7 +22,8 @@ leetcode-rust/
 ├── README.md
 ├── two_sum.rs
 ├── roman_to_integer.rs
-└── merge_two_lists.rs
+├── merge_two_lists.rs
+└── remove_duplicates.rs
 ```
 
 ---
@@ -160,6 +162,41 @@ impl Solution {
 
 ---
 
+### 26. Remove Duplicates from Sorted Array
+
+**Problem:** Given an integer array `nums` sorted in non-decreasing order, remove the duplicates in-place such that each unique element appears only once. Return the number of unique elements `k`.
+
+```rust
+impl Solution {
+    pub fn remove_duplicates(nums: &mut Vec<i32>) -> i32 {
+        let mut k = 1;
+
+        for i in 1..nums.len() {
+            if nums[i] != nums[i - 1] {
+                nums[k] = nums[i];
+                k += 1;
+            }
+        }
+
+        k as i32
+    }
+}
+```
+
+**Key Rust Concepts:**
+- `&mut Vec<i32>` — mutable reference to the vector, required to modify it in-place without taking ownership
+- `let mut k = 1` — the write pointer, starts at 1 because the first element is always unique
+- `nums[i] != nums[i - 1]` — since the array is sorted, duplicates are always adjacent, so we only need to compare with the previous element
+- `nums[k] = nums[i]` — overwrites the duplicate position with the new unique value directly in the same array
+- `k as i32` — casts `usize` to `i32` for the return type
+- **No extra array needed** — the in-place Two Pointers approach satisfies the `O(1)` space requirement
+
+**Complexity:**
+- ⏱ Time: `O(n)` — single pass through the array
+- 💾 Space: `O(1)` — in-place, no extra memory used
+
+---
+
 ## 🧠 Why Rust for LeetCode?
 
 Rust is an unusual but powerful choice for competitive problem solving:
@@ -175,7 +212,7 @@ Rust is an unusual but powerful choice for competitive problem solving:
 
 ```bash
 # Clone the repo
-git clone https://github.com/ahmedhawash321/leetcode-rust.git
+git clone https://github.com/AhmedHawash321/leetcode-rust.git
 cd leetcode-rust
 
 # Run a specific solution
