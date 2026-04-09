@@ -10,6 +10,8 @@ A collection of LeetCode self solutions written in Rust, focusing on clean code,
 | 21 | Merge Two Sorted Lists | 🟢 Easy | O(n + m) | O(1) | [View](#21-merge-two-sorted-lists) |
 | 26 | Remove Duplicates from Sorted Array | 🟢 Easy | O(n) | O(1) | [View](#26-remove-duplicates-from-sorted-array) |
 | 27 | Remove Element | 🟢 Easy | O(n) | O(1) | [View](#27-remove-element) |
+| 35 | Search Insert Position | 🟢 Easy | O(log n) | O(1) | [View](#35-search-insert-position) |
+| 58 | Length of Last Word | 🟢 Easy | O(n) | O(1) | [View](#58-length-of-last-word) |
 
 ## 🗂️ Structure
 ```
@@ -20,7 +22,9 @@ leetcode-rust/
 ├── valid_parentheses.rs
 ├── merge_two_lists.rs
 ├── remove_duplicates.rs
-└── remove_element.rs
+├── remove_element.rs
+├── search_insert.rs
+└── length_of_last_word.rs
 ```
 
 ---
@@ -244,7 +248,7 @@ impl Solution {
 
 **Key Rust Concepts:**
 - `&mut Vec<i32>` — mutable reference to modify the array in-place without taking ownership
-- `let mut k = 0` — the write pointer, starts at `0` because no element is guaranteed to be valid upfront (unlike problem #26)
+- `let mut k = 0` — the write pointer, starts at `0` because no element is guaranteed to be valid upfront
 - `nums[i] != val` — only copy elements that are NOT equal to the target value
 - `nums[k] = nums[i]` — overwrites the current write position with the valid element, shifting elements left
 - `k as i32` — explicit cast from `usize` to `i32` required by the return type
@@ -253,6 +257,77 @@ impl Solution {
 **Complexity:**
 - ⏱ Time: O(n) — single pass through the array
 - 💾 Space: O(1) — in-place modification, no extra memory used
+
+---
+
+### 35. Search Insert Position
+**Problem:** Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order. Must run in `O(log n)` time.
+
+```rust
+impl Solution {
+    pub fn search_insert(nums: Vec<i32>, target: i32) -> i32 {
+        let mut left = 0;
+        let mut right = nums.len() as i32 - 1;
+
+        while left <= right {
+            let mid = left + (right - left) / 2;
+            if nums[mid as usize] == target {
+                return mid;
+            } else if nums[mid as usize] < target {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        left
+    }
+}
+```
+
+**Key Rust Concepts:**
+- `nums.len() as i32 - 1` — `len()` returns `usize`, cast to `i32` so we can safely go negative when the array is empty
+- `left + (right - left) / 2` — safer way to calculate mid, avoids integer overflow compared to `(left + right) / 2`
+- `mid as usize` — array indexing in Rust requires `usize`, so we cast back when accessing elements
+- `while left <= right` — standard Binary Search loop condition
+- **Binary Search logic:**
+  - Found target → return `mid`
+  - Target is bigger → move `left` up: `left = mid + 1`
+  - Target is smaller → move `right` down: `right = mid - 1`
+- `left` at the end — when the target is not found, `left` naturally lands on the correct insert position
+
+**Complexity:**
+- ⏱ Time: O(log n) — search space halves with every iteration
+- 💾 Space: O(1) — only a few pointer variables used
+
+---
+
+### 58. Length of Last Word
+**Problem:** Given a string `s` consisting of words and spaces, return the length of the last word in the string.
+
+```rust
+impl Solution {
+    pub fn length_of_last_word(s: String) -> i32 {
+        s.trim_end()
+            .split_whitespace()
+            .last()
+            .map(|w| w.len())
+            .unwrap_or(0) as i32
+    }
+}
+```
+
+**Key Rust Concepts:**
+- `.trim_end()` — removes trailing whitespace from the string so a trailing space doesn't produce an empty last word
+- `.split_whitespace()` — splits the string by any whitespace and returns an iterator, automatically ignoring multiple spaces
+- `.last()` — consumes the iterator and returns the last element as `Option<&str>`
+- `.map(|w| w.len())` — if `Some(word)` exists, applies the closure to get its length; if `None`, passes `None` forward
+- `.unwrap_or(0)` — safely unwraps the `Option`, returning `0` if no word was found instead of panicking
+- `as i32` — casts `usize` (returned by `.len()`) to `i32` for the return type
+- **Idiomatic Rust** — this solution chains iterator methods instead of using loops, which is the preferred Rust style
+
+**Complexity:**
+- ⏱ Time: O(n) — the string is traversed once by the iterator chain
+- 💾 Space: O(1) — no extra allocations, iterator is lazy
 
 ---
 
@@ -274,4 +349,4 @@ cd leetcode-rust
 rustc two_sum.rs && ./two_sum
 ```
 
-Solutions are added regularly. Feel free to open an issue or PR if you spot improvements!
+*Solutions are added regularly. Feel free to open an issue or PR if you spot improvements!*
