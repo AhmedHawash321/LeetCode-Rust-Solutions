@@ -12,6 +12,8 @@ A collection of LeetCode self solutions written in Rust, focusing on clean code,
 | 27 | Remove Element | 🟢 Easy | O(n) | O(1) | [View](#27-remove-element) |
 | 35 | Search Insert Position | 🟢 Easy | O(log n) | O(1) | [View](#35-search-insert-position) |
 | 58 | Length of Last Word | 🟢 Easy | O(n) | O(1) | [View](#58-length-of-last-word) |
+| 66 | Plus One | 🟢 Easy | O(n) | O(1) | [View](#66-plus-one) |
+| 100 | Same Tree | 🟢 Easy | O(n) | O(h) | [View](#100-same-tree) |
 
 ## 🗂️ Structure
 ```
@@ -24,7 +26,9 @@ leetcode-rust/
 ├── remove_duplicates.rs
 ├── remove_element.rs
 ├── search_insert.rs
-└── length_of_last_word.rs
+├── length_of_last_word.rs
+├── plus_one.rs
+└── same_tree.rs
 ```
 
 ---
@@ -289,10 +293,7 @@ impl Solution {
 - `left + (right - left) / 2` — safer way to calculate mid, avoids integer overflow compared to `(left + right) / 2`
 - `mid as usize` — array indexing in Rust requires `usize`, so we cast back when accessing elements
 - `while left <= right` — standard Binary Search loop condition
-- **Binary Search logic:**
-  - Found target → return `mid`
-  - Target is bigger → move `left` up: `left = mid + 1`
-  - Target is smaller → move `right` down: `right = mid - 1`
+- **Binary Search logic:** Found target → return `mid`. Target bigger → `left = mid + 1`. Target smaller → `right = mid - 1`
 - `left` at the end — when the target is not found, `left` naturally lands on the correct insert position
 
 **Complexity:**
@@ -317,17 +318,93 @@ impl Solution {
 ```
 
 **Key Rust Concepts:**
-- `.trim_end()` — removes trailing whitespace from the string so a trailing space doesn't produce an empty last word
-- `.split_whitespace()` — splits the string by any whitespace and returns an iterator, automatically ignoring multiple spaces
+- `.trim_end()` — removes trailing whitespace so a trailing space doesn't produce an empty last word
+- `.split_whitespace()` — splits by any whitespace and returns an iterator, automatically ignoring multiple spaces
 - `.last()` — consumes the iterator and returns the last element as `Option<&str>`
-- `.map(|w| w.len())` — if `Some(word)` exists, applies the closure to get its length; if `None`, passes `None` forward
+- `.map(|w| w.len())` — if `Some(word)` exists, applies the closure to get its length
 - `.unwrap_or(0)` — safely unwraps the `Option`, returning `0` if no word was found instead of panicking
 - `as i32` — casts `usize` (returned by `.len()`) to `i32` for the return type
-- **Idiomatic Rust** — this solution chains iterator methods instead of using loops, which is the preferred Rust style
 
 **Complexity:**
 - ⏱ Time: O(n) — the string is traversed once by the iterator chain
 - 💾 Space: O(1) — no extra allocations, iterator is lazy
+
+---
+
+### 66. Plus One
+**Problem:** You are given a large integer represented as an array `digits`. Increment the large integer by one and return the resulting array of digits.
+
+```rust
+impl Solution {
+    pub fn plus_one(mut digits: Vec<i32>) -> Vec<i32> {
+        let n = digits.len();
+        for i in (0..n).rev() {
+            if digits[i] < 9 {
+                digits[i] += 1;
+                return digits;
+            }
+            digits[i] = 0;
+        }
+        digits.insert(0, 1);
+        digits
+    }
+}
+```
+
+**Key Rust Concepts:**
+- `mut digits: Vec<i32>` — takes ownership of the vector and makes it mutable directly in the parameter, no need for `&mut`
+- `(0..n).rev()` — iterates from the last index to `0`, since we always start adding from the rightmost digit
+- `digits[i] < 9` — if the digit is not `9`, simply increment and return immediately, no carry needed
+- `digits[i] = 0` — if the digit is `9`, it becomes `0` and the carry propagates to the left
+- `digits.insert(0, 1)` — only reached when all digits were `9` (e.g., `[9,9,9]` → `[1,0,0,0]`), inserts `1` at the front
+- **Logic:** Walk from right to left. If no carry, return early. If all digits carry over, prepend `1`
+
+**Complexity:**
+- ⏱ Time: O(n) — at most one full pass through the array
+- 💾 Space: O(1) — in-place for most cases, O(n) only when all digits are `9`
+
+---
+
+### 100. Same Tree
+**Problem:** Given the roots of two binary trees `p` and `q`, write a function to check if they are the same or not. Two binary trees are considered the same if they are structurally identical, and the nodes have the same value.
+
+```rust
+use std::rc::Rc;
+use std::cell::RefCell;
+
+impl Solution {
+    pub fn is_same_tree(
+        p: Option<Rc<RefCell<TreeNode>>>,
+        q: Option<Rc<RefCell<TreeNode>>>,
+    ) -> bool {
+        match (p, q) {
+            (None, None) => true,
+            (Some(node1), Some(node2)) => {
+                let n1 = node1.borrow();
+                let n2 = node2.borrow();
+
+                n1.val == n2.val &&
+                Self::is_same_tree(n1.left.clone(), n2.left.clone()) &&
+                Self::is_same_tree(n1.right.clone(), n2.right.clone())
+            },
+            _ => false,
+        }
+    }
+}
+```
+
+**Key Rust Concepts:**
+- `Rc<RefCell<TreeNode>>` — LeetCode's standard tree node type in Rust. `Rc` enables shared ownership, `RefCell` enables interior mutability (runtime borrow checking)
+- `match (p, q)` — pattern matches on both nodes simultaneously, covering all 3 cases cleanly
+- `(None, None) => true` — both nodes are absent, trees match at this position ✅
+- `_ => false` — one is `Some` and the other is `None`, structural mismatch ❌
+- `.borrow()` — `RefCell`'s method to get a shared read reference to the inner value at runtime
+- `.clone()` — required to pass child nodes into recursive calls since `Rc` clone is cheap (just increments reference count)
+- **Recursion** — checks current node values, then recursively verifies left and right subtrees
+
+**Complexity:**
+- ⏱ Time: O(n) — every node in both trees is visited once
+- 💾 Space: O(h) — call stack depth equals tree height `h`. O(log n) for balanced trees, O(n) worst case for skewed trees
 
 ---
 
