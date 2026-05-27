@@ -14,6 +14,7 @@ A collection of LeetCode self solutions written in Rust, focusing on clean code,
 | 58 | Length of Last Word | 🟢 Easy | O(n) | O(1) | [View](#58-length-of-last-word) |
 | 66 | Plus One | 🟢 Easy | O(n) | O(1) | [View](#66-plus-one) |
 | 70 | Climbing Stairs | 🟢 Easy | O(n) | O(1) | [View](#70-climbing-stairs) |
+| 83 | Remove Duplicates from Sorted List | 🟢 Easy | O(n) | O(1) | [View](#83-remove-duplicates-from-sorted-list) |
 | 100 | Same Tree | 🟢 Easy | O(n) | O(h) | [View](#100-same-tree) |
 
 ## 🗂️ Structure
@@ -30,6 +31,7 @@ leetcode-rust/
 ├── length_of_last_word.rs
 ├── plus_one.rs
 ├── climb_stairs.rs
+├── delete_duplicates.rs
 └── same_tree.rs
 ```
 
@@ -400,6 +402,44 @@ impl Solution {
 **Complexity:**
 - ⏱ Time: O(n) — single pass from step 3 to n
 - 💾 Space: O(1) — only two variables used regardless of input size
+
+---
+
+### 83. Remove Duplicates from Sorted List
+**Problem:** Given the `head` of a sorted linked list, delete all duplicates such that each element appears only once. Return the linked list sorted as well.
+
+```rust
+impl Solution {
+    pub fn delete_duplicates(mut head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        let mut current = head.as_mut();
+
+        while let Some(node) = current {
+            while let Some(next_node) = node.next.as_mut() {
+                if node.val == next_node.val {
+                    node.next = next_node.next.take();
+                } else {
+                    break;
+                }
+            }
+            current = node.next.as_mut();
+        }
+        head
+    }
+}
+```
+
+**Key Rust Concepts:**
+- `mut head: Option<Box<ListNode>>` — takes ownership of the list and makes it mutable; no dummy node needed since we return `head` directly
+- `head.as_mut()` — borrows a mutable reference to the inner `Box<ListNode>` without consuming the `Option`, so `head` can still be returned at the end
+- `while let Some(node) = current` — outer loop walks forward through the list one unique node at a time
+- `while let Some(next_node) = node.next.as_mut()` — inner loop keeps peeking at the immediate successor without advancing `current` yet
+- `node.next = next_node.next.take()` — `.take()` moves the node after the duplicate out of its `Option` (leaving `None`) and splices it in as the new `next`, effectively unlinking the duplicate in a single safe operation
+- `break` — exits the inner loop as soon as a non-duplicate neighbour is found, then the outer loop advances `current`
+- **In-place surgery** — no new nodes are allocated; only `next` pointers are rewired, keeping space O(1)
+
+**Complexity:**
+- ⏱ Time: O(n) — every node is visited at most twice (once by the outer loop, once by the inner)
+- 💾 Space: O(1) — pointer manipulation only, no auxiliary data structures
 
 ---
 
