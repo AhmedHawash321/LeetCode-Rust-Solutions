@@ -13,6 +13,7 @@ A collection of LeetCode self solutions written in Rust, focusing on clean code,
 | 35 | Search Insert Position | 🟢 Easy | O(log n) | O(1) | [View](#35-search-insert-position) |
 | 58 | Length of Last Word | 🟢 Easy | O(n) | O(1) | [View](#58-length-of-last-word) |
 | 66 | Plus One | 🟢 Easy | O(n) | O(1) | [View](#66-plus-one) |
+| 70 | Climbing Stairs | 🟢 Easy | O(n) | O(1) | [View](#70-climbing-stairs) |
 | 100 | Same Tree | 🟢 Easy | O(n) | O(h) | [View](#100-same-tree) |
 
 ## 🗂️ Structure
@@ -28,6 +29,7 @@ leetcode-rust/
 ├── search_insert.rs
 ├── length_of_last_word.rs
 ├── plus_one.rs
+├── climb_stairs.rs
 └── same_tree.rs
 ```
 
@@ -362,6 +364,42 @@ impl Solution {
 **Complexity:**
 - ⏱ Time: O(n) — at most one full pass through the array
 - 💾 Space: O(1) — in-place for most cases, O(n) only when all digits are `9`
+
+---
+
+### 70. Climbing Stairs
+**Problem:** You are climbing a staircase. It takes `n` steps to reach the top. Each time you can either climb `1` or `2` steps. In how many distinct ways can you climb to the top?
+
+```rust
+impl Solution {
+    pub fn climb_stairs(n: i32) -> i32 {
+        if n <= 2 {
+            return n;
+        }
+        let mut first = 1;
+        let mut second = 2;
+
+        for _ in 3..=n {
+            let current = first + second;
+            first = second;
+            second = current;
+        }
+        second
+    }
+}
+```
+
+**Key Rust Concepts:**
+- `if n <= 2 { return n; }` — early return handles the base cases: 1 step → 1 way, 2 steps → 2 ways
+- `let mut first = 1` / `let mut second = 2` — rolling variables track the previous two Fibonacci-like values, avoiding an array
+- `3..=n` — inclusive range starting from `3`, since the first two cases are already handled
+- `for _ in ...` — the loop variable is discarded with `_` because only the iteration count matters, not the index value
+- `let current = first + second` — computes the next value before updating, preventing overwrite issues
+- **Fibonacci pattern** — the number of ways to reach step `n` equals ways to reach `n-1` plus ways to reach `n-2`, identical to the Fibonacci sequence
+
+**Complexity:**
+- ⏱ Time: O(n) — single pass from step 3 to n
+- 💾 Space: O(1) — only two variables used regardless of input size
 
 ---
 
