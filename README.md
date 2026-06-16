@@ -1,24 +1,13 @@
-# 🦀 LeetCode-Rust_solutions
+🦀 LeetCode-Rust_solutions
+
 A collection of LeetCode self solutions written in Rust, focusing on clean code, performance, and detailed explanations of Rust-specific concepts used in each solution.
 
-## 📊 Progress Overview
-| # | Problem | Difficulty | Time Complexity | Space Complexity | Solution |
-|---|---------|------------|-----------------|------------------|----------|
-| 1 | Two Sum | 🟢 Easy | O(n²) | O(1) | [View](#1-two-sum) |
-| 13 | Roman to Integer | 🟢 Easy | O(n) | O(1) | [View](#13-roman-to-integer) |
-| 20 | Valid Parentheses | 🟢 Easy | O(n) | O(n) | [View](#20-valid-parentheses) |
-| 21 | Merge Two Sorted Lists | 🟢 Easy | O(n + m) | O(1) | [View](#21-merge-two-sorted-lists) |
-| 26 | Remove Duplicates from Sorted Array | 🟢 Easy | O(n) | O(1) | [View](#26-remove-duplicates-from-sorted-array) |
-| 27 | Remove Element | 🟢 Easy | O(n) | O(1) | [View](#27-remove-element) |
-| 35 | Search Insert Position | 🟢 Easy | O(log n) | O(1) | [View](#35-search-insert-position) |
-| 58 | Length of Last Word | 🟢 Easy | O(n) | O(1) | [View](#58-length-of-last-word) |
-| 66 | Plus One | 🟢 Easy | O(n) | O(1) | [View](#66-plus-one) |
-| 70 | Climbing Stairs | 🟢 Easy | O(n) | O(1) | [View](#70-climbing-stairs) |
-| 83 | Remove Duplicates from Sorted List | 🟢 Easy | O(n) | O(1) | [View](#83-remove-duplicates-from-sorted-list) |
-| 100 | Same Tree | 🟢 Easy | O(n) | O(h) | [View](#100-same-tree) |
+📊 Progress Overview
 
-## 🗂️ Structure
-```
+#ProblemDifficultyTime ComplexitySpace ComplexitySolution1Two Sum🟢 EasyO(n²)O(1)View13Roman to Integer🟢 EasyO(n)O(1)View20Valid Parentheses🟢 EasyO(n)O(n)View21Merge Two Sorted Lists🟢 EasyO(n + m)O(1)View26Remove Duplicates from Sorted Array🟢 EasyO(n)O(1)View27Remove Element🟢 EasyO(n)O(1)View28Find the Index of the First Occurrence in a String🟢 EasyO(n·m)O(1)View35Search Insert Position🟢 EasyO(log n)O(1)View58Length of Last Word🟢 EasyO(n)O(1)View66Plus One🟢 EasyO(n)O(1)View70Climbing Stairs🟢 EasyO(n)O(1)View83Remove Duplicates from Sorted List🟢 EasyO(n)O(1)View100Same Tree🟢 EasyO(n)O(h)View136Single Number🟢 EasyO(n)O(1)View
+
+🗂️ Structure
+
 leetcode-rust/
 ├── README.md
 ├── two_sum.rs
@@ -27,23 +16,23 @@ leetcode-rust/
 ├── merge_two_lists.rs
 ├── remove_duplicates.rs
 ├── remove_element.rs
+├── str_str.rs
 ├── search_insert.rs
 ├── length_of_last_word.rs
 ├── plus_one.rs
 ├── climb_stairs.rs
 ├── delete_duplicates.rs
-└── same_tree.rs
-```
+├── same_tree.rs
+└── single_number.rs
 
----
 
-## Solutions
+Solutions
 
-### 1. Two Sum
-**Problem:** Given an array of integers `nums` and an integer `target`, return indices of the two numbers that add up to `target`.
+1. Two Sum
 
-```rust
-impl Solution {
+Problem: Given an array of integers nums and an integer target, return indices of the two numbers that add up to target.
+
+rustimpl Solution {
     pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
         for i in 0..nums.len() {
             for j in (i + 1)..nums.len() {
@@ -55,25 +44,29 @@ impl Solution {
         vec![]
     }
 }
-```
 
-**Key Rust Concepts:**
-- `Vec<i32>` — used instead of a fixed array because the input size is unknown at compile time
-- `0..nums.len()` — Rust range syntax, equivalent to `i < nums.len()` in other languages
-- `j` starts from `i + 1` to avoid comparing an element with itself
-- `as i32` — explicit type cast required because loop indices are `usize` in Rust, but the return type is `Vec<i32>`
+Key Rust Concepts:
 
-**Complexity:**
-- ⏱ Time: O(n²) — nested loops, each pair is checked once
-- 💾 Space: O(1) — no extra data structures used
 
----
+Vec<i32> — used instead of a fixed array because the input size is unknown at compile time
+0..nums.len() — Rust range syntax, equivalent to i < nums.len() in other languages
+j starts from i + 1 to avoid comparing an element with itself
+as i32 — explicit type cast required because loop indices are usize in Rust, but the return type is Vec<i32>
 
-### 13. Roman to Integer
-**Problem:** Convert a Roman numeral string to an integer.
 
-```rust
-impl Solution {
+Complexity:
+
+
+⏱ Time: O(n²) — nested loops, each pair is checked once
+💾 Space: O(1) — no extra data structures used
+
+
+
+13. Roman to Integer
+
+Problem: Convert a Roman numeral string to an integer.
+
+rustimpl Solution {
     pub fn roman_to_int(s: String) -> i32 {
         let mut result = 0;
         let mut chars = s.chars().peekable();
@@ -105,27 +98,31 @@ impl Solution {
         }
     }
 }
-```
 
-**Key Rust Concepts:**
-- `.peekable()` — an Iterator Adaptor that allows looking at the next element without consuming it
-- `.peek()` — returns `Option<&&char>`, used here to check the next character ahead
-- `.map_or(0, |&c| ...)` — handles the `Option` returned by `peek()`: returns `0` if `None`, or applies the closure if `Some`
-- `|&c|` — pattern destructures the reference since `peek()` yields a reference to the next item
-- `match` — Rust's powerful pattern matching, used here as a lookup table for Roman numeral values
-- **Logic:** If the current value is less than the next (e.g., IV), subtract it. Otherwise, add it (e.g., VI)
+Key Rust Concepts:
 
-**Complexity:**
-- ⏱ Time: O(n) — single pass through the string
-- 💾 Space: O(1) — only a few integer variables used
 
----
+.peekable() — an Iterator Adaptor that allows looking at the next element without consuming it
+.peek() — returns Option<&&char>, used here to check the next character ahead
+.map_or(0, |&c| ...) — handles the Option returned by peek(): returns 0 if None, or applies the closure if Some
+|&c| — pattern destructures the reference since peek() yields a reference to the next item
+match — Rust's powerful pattern matching, used here as a lookup table for Roman numeral values
+Logic: If the current value is less than the next (e.g., IV), subtract it. Otherwise, add it (e.g., VI)
 
-### 20. Valid Parentheses
-**Problem:** Given a string `s` containing just the characters `'('`, `')'`, `'{'`, `'}'`, `'['` and `']'`, determine if the input string is valid.
 
-```rust
-impl Solution {
+Complexity:
+
+
+⏱ Time: O(n) — single pass through the string
+💾 Space: O(1) — only a few integer variables used
+
+
+
+20. Valid Parentheses
+
+Problem: Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+
+rustimpl Solution {
     pub fn is_valid(s: String) -> bool {
         let mut stack: Vec<char> = Vec::new();
 
@@ -142,27 +139,31 @@ impl Solution {
         stack.is_empty()
     }
 }
-```
 
-**Key Rust Concepts:**
-- `Vec<char>` used as a Stack — Rust's `Vec` has built-in `push` and `pop` making it a perfect stack
-- `stack.push(c)` — adds an opening bracket to the top of the stack
-- `stack.pop()` — removes and returns the last element as `Option<char>`, returns `None` if empty
-- `Some('(')` — `pop()` returns an `Option`, so we compare with `Some(value)` not the value directly
-- `'(' | '[' | '{'` — Rust's `match` supports multiple patterns with `|` (OR)
-- `stack.is_empty()` — at the end, a valid string leaves the stack completely empty
+Key Rust Concepts:
 
-**Complexity:**
-- ⏱ Time: O(n) — single pass through the string
-- 💾 Space: O(n) — in the worst case all characters are opening brackets
 
----
+Vec<char> used as a Stack — Rust's Vec has built-in push and pop making it a perfect stack
+stack.push(c) — adds an opening bracket to the top of the stack
+stack.pop() — removes and returns the last element as Option<char>, returns None if empty
+Some('(') — pop() returns an Option, so we compare with Some(value) not the value directly
+'(' | '[' | '{' — Rust's match supports multiple patterns with | (OR)
+stack.is_empty() — at the end, a valid string leaves the stack completely empty
 
-### 21. Merge Two Sorted Lists
-**Problem:** Merge two sorted linked lists and return the merged list sorted.
 
-```rust
-impl Solution {
+Complexity:
+
+
+⏱ Time: O(n) — single pass through the string
+💾 Space: O(n) — in the worst case all characters are opening brackets
+
+
+
+21. Merge Two Sorted Lists
+
+Problem: Merge two sorted linked lists and return the merged list sorted.
+
+rustimpl Solution {
     pub fn merge_two_lists(
         mut list1: Option<Box<ListNode>>,
         mut list2: Option<Box<ListNode>>,
@@ -187,27 +188,31 @@ impl Solution {
         dummy.next
     }
 }
-```
 
-**Key Rust Concepts:**
-- `Option<Box<ListNode>>` — linked list nodes in Rust are heap-allocated (`Box`) and nullable (`Option`)
-- `mut` on parameters — Rust requires explicit `mut` to allow mutation
-- `.is_some()` — safely checks if the `Option` contains a value before unwrapping
-- `.as_ref()` — borrows the inner value without taking ownership
-- `.take()` — moves the value out of the `Option`, replacing it with `None` (avoids double-move errors)
-- `dummy.next` without `;` — implicit return of the final merged list
+Key Rust Concepts:
 
-**Complexity:**
-- ⏱ Time: O(n + m) — each node from both lists is visited once
-- 💾 Space: O(1) — no new nodes are created, only pointers are rearranged
 
----
+Option<Box<ListNode>> — linked list nodes in Rust are heap-allocated (Box) and nullable (Option)
+mut on parameters — Rust requires explicit mut to allow mutation
+.is_some() — safely checks if the Option contains a value before unwrapping
+.as_ref() — borrows the inner value without taking ownership
+.take() — moves the value out of the Option, replacing it with None (avoids double-move errors)
+dummy.next without ; — implicit return of the final merged list
 
-### 26. Remove Duplicates from Sorted Array
-**Problem:** Given a sorted array, remove duplicates in-place so each unique element appears only once. Return the count of unique elements.
 
-```rust
-impl Solution {
+Complexity:
+
+
+⏱ Time: O(n + m) — each node from both lists is visited once
+💾 Space: O(1) — no new nodes are created, only pointers are rearranged
+
+
+
+26. Remove Duplicates from Sorted Array
+
+Problem: Given a sorted array, remove duplicates in-place so each unique element appears only once. Return the count of unique elements.
+
+rustimpl Solution {
     pub fn remove_duplicates(nums: &mut Vec<i32>) -> i32 {
         let mut k = 1;
 
@@ -221,26 +226,30 @@ impl Solution {
         k as i32
     }
 }
-```
 
-**Key Rust Concepts:**
-- `&mut Vec<i32>` — mutable reference, required to modify in-place without taking ownership
-- `let mut k = 1` — the write pointer, starts at 1 because the first element is always unique
-- `nums[i] != nums[i - 1]` — since the array is sorted, duplicates are always adjacent
-- `nums[k] = nums[i]` — overwrites the duplicate position with the new unique value
-- `k as i32` — casts `usize` to `i32` for the return type
+Key Rust Concepts:
 
-**Complexity:**
-- ⏱ Time: O(n) — single pass through the array
-- 💾 Space: O(1) — in-place, no extra memory used
 
----
+&mut Vec<i32> — mutable reference, required to modify in-place without taking ownership
+let mut k = 1 — the write pointer, starts at 1 because the first element is always unique
+nums[i] != nums[i - 1] — since the array is sorted, duplicates are always adjacent
+nums[k] = nums[i] — overwrites the duplicate position with the new unique value
+k as i32 — casts usize to i32 for the return type
 
-### 27. Remove Element
-**Problem:** Given an array `nums` and a value `val`, remove all occurrences of `val` in-place. Return the number of elements that are not equal to `val`.
 
-```rust
-impl Solution {
+Complexity:
+
+
+⏱ Time: O(n) — single pass through the array
+💾 Space: O(1) — in-place, no extra memory used
+
+
+
+27. Remove Element
+
+Problem: Given an array nums and a value val, remove all occurrences of val in-place. Return the number of elements that are not equal to val.
+
+rustimpl Solution {
     pub fn remove_element(nums: &mut Vec<i32>, val: i32) -> i32 {
         let mut k = 0;
         for i in 0..nums.len() {
@@ -252,27 +261,76 @@ impl Solution {
         k as i32
     }
 }
-```
 
-**Key Rust Concepts:**
-- `&mut Vec<i32>` — mutable reference to modify the array in-place without taking ownership
-- `let mut k = 0` — the write pointer, starts at `0` because no element is guaranteed to be valid upfront
-- `nums[i] != val` — only copy elements that are NOT equal to the target value
-- `nums[k] = nums[i]` — overwrites the current write position with the valid element, shifting elements left
-- `k as i32` — explicit cast from `usize` to `i32` required by the return type
-- **Two Pointers pattern** — `i` scans forward, `k` tracks the next valid write position
+Key Rust Concepts:
 
-**Complexity:**
-- ⏱ Time: O(n) — single pass through the array
-- 💾 Space: O(1) — in-place modification, no extra memory used
 
----
+&mut Vec<i32> — mutable reference to modify the array in-place without taking ownership
+let mut k = 0 — the write pointer, starts at 0 because no element is guaranteed to be valid upfront
+nums[i] != val — only copy elements that are NOT equal to the target value
+nums[k] = nums[i] — overwrites the current write position with the valid element, shifting elements left
+k as i32 — explicit cast from usize to i32 required by the return type
+Two Pointers pattern — i scans forward, k tracks the next valid write position
 
-### 35. Search Insert Position
-**Problem:** Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order. Must run in `O(log n)` time.
 
-```rust
-impl Solution {
+Complexity:
+
+
+⏱ Time: O(n) — single pass through the array
+💾 Space: O(1) — in-place modification, no extra memory used
+
+
+
+28. Find the Index of the First Occurrence in a String
+
+Problem: Given two strings haystack and needle, return the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack.
+
+rustimpl Solution {
+    pub fn str_str(haystack: String, needle: String) -> i32 {
+        let h_bytes = haystack.as_bytes();
+        let n_bytes = needle.as_bytes();
+
+        let h_len = h_bytes.len();
+        let n_len = n_bytes.len();
+
+        if n_len > h_len {
+            return -1;
+        }
+
+        for i in 0..=(h_len - n_len) {
+            if &h_bytes[i..i + n_len] == n_bytes {
+                return i as i32;
+            }
+        }
+        -1
+    }
+}
+
+Key Rust Concepts:
+
+
+.as_bytes() — converts a &str to a &[u8] byte slice; byte comparison is faster than char-by-char for ASCII strings and avoids UTF-8 multi-byte complexity
+if n_len > h_len — early return guard; also prevents the h_len - n_len subtraction from underflowing since both are usize (unsigned), which would wrap around and panic in debug mode
+0..=(h_len - n_len) — inclusive range so the last valid window starting index is included (e.g., for h_len=5, n_len=3, we check indices 0, 1, 2)
+&h_bytes[i..i + n_len] — slice the haystack byte array into a window of exactly needle's length at each position
+== n_bytes — Rust slices implement PartialEq, so this compares the two byte slices element-by-element in one expression
+i as i32 — cast usize index to i32 for the return type
+Sliding Window — a fixed-size window of needle's length slides across the haystack, comparing at each position
+
+
+Complexity:
+
+
+⏱ Time: O(n·m) — for each of the n - m positions, up to m bytes are compared (n = haystack length, m = needle length)
+💾 Space: O(1) — no extra allocations; .as_bytes() is a zero-copy view into the existing string data
+
+
+
+35. Search Insert Position
+
+Problem: Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order. Must run in O(log n) time.
+
+rustimpl Solution {
     pub fn search_insert(nums: Vec<i32>, target: i32) -> i32 {
         let mut left = 0;
         let mut right = nums.len() as i32 - 1;
@@ -290,27 +348,31 @@ impl Solution {
         left
     }
 }
-```
 
-**Key Rust Concepts:**
-- `nums.len() as i32 - 1` — `len()` returns `usize`, cast to `i32` so we can safely go negative when the array is empty
-- `left + (right - left) / 2` — safer way to calculate mid, avoids integer overflow compared to `(left + right) / 2`
-- `mid as usize` — array indexing in Rust requires `usize`, so we cast back when accessing elements
-- `while left <= right` — standard Binary Search loop condition
-- **Binary Search logic:** Found target → return `mid`. Target bigger → `left = mid + 1`. Target smaller → `right = mid - 1`
-- `left` at the end — when the target is not found, `left` naturally lands on the correct insert position
+Key Rust Concepts:
 
-**Complexity:**
-- ⏱ Time: O(log n) — search space halves with every iteration
-- 💾 Space: O(1) — only a few pointer variables used
 
----
+nums.len() as i32 - 1 — len() returns usize, cast to i32 so we can safely go negative when the array is empty
+left + (right - left) / 2 — safer way to calculate mid, avoids integer overflow compared to (left + right) / 2
+mid as usize — array indexing in Rust requires usize, so we cast back when accessing elements
+while left <= right — standard Binary Search loop condition
+Binary Search logic: Found target → return mid. Target bigger → left = mid + 1. Target smaller → right = mid - 1
+left at the end — when the target is not found, left naturally lands on the correct insert position
 
-### 58. Length of Last Word
-**Problem:** Given a string `s` consisting of words and spaces, return the length of the last word in the string.
 
-```rust
-impl Solution {
+Complexity:
+
+
+⏱ Time: O(log n) — search space halves with every iteration
+💾 Space: O(1) — only a few pointer variables used
+
+
+
+58. Length of Last Word
+
+Problem: Given a string s consisting of words and spaces, return the length of the last word in the string.
+
+rustimpl Solution {
     pub fn length_of_last_word(s: String) -> i32 {
         s.trim_end()
             .split_whitespace()
@@ -319,27 +381,31 @@ impl Solution {
             .unwrap_or(0) as i32
     }
 }
-```
 
-**Key Rust Concepts:**
-- `.trim_end()` — removes trailing whitespace so a trailing space doesn't produce an empty last word
-- `.split_whitespace()` — splits by any whitespace and returns an iterator, automatically ignoring multiple spaces
-- `.last()` — consumes the iterator and returns the last element as `Option<&str>`
-- `.map(|w| w.len())` — if `Some(word)` exists, applies the closure to get its length
-- `.unwrap_or(0)` — safely unwraps the `Option`, returning `0` if no word was found instead of panicking
-- `as i32` — casts `usize` (returned by `.len()`) to `i32` for the return type
+Key Rust Concepts:
 
-**Complexity:**
-- ⏱ Time: O(n) — the string is traversed once by the iterator chain
-- 💾 Space: O(1) — no extra allocations, iterator is lazy
 
----
+.trim_end() — removes trailing whitespace so a trailing space doesn't produce an empty last word
+.split_whitespace() — splits by any whitespace and returns an iterator, automatically ignoring multiple spaces
+.last() — consumes the iterator and returns the last element as Option<&str>
+.map(|w| w.len()) — if Some(word) exists, applies the closure to get its length
+.unwrap_or(0) — safely unwraps the Option, returning 0 if no word was found instead of panicking
+as i32 — casts usize (returned by .len()) to i32 for the return type
 
-### 66. Plus One
-**Problem:** You are given a large integer represented as an array `digits`. Increment the large integer by one and return the resulting array of digits.
 
-```rust
-impl Solution {
+Complexity:
+
+
+⏱ Time: O(n) — the string is traversed once by the iterator chain
+💾 Space: O(1) — no extra allocations, iterator is lazy
+
+
+
+66. Plus One
+
+Problem: You are given a large integer represented as an array digits. Increment the large integer by one and return the resulting array of digits.
+
+rustimpl Solution {
     pub fn plus_one(mut digits: Vec<i32>) -> Vec<i32> {
         let n = digits.len();
         for i in (0..n).rev() {
@@ -353,27 +419,31 @@ impl Solution {
         digits
     }
 }
-```
 
-**Key Rust Concepts:**
-- `mut digits: Vec<i32>` — takes ownership of the vector and makes it mutable directly in the parameter, no need for `&mut`
-- `(0..n).rev()` — iterates from the last index to `0`, since we always start adding from the rightmost digit
-- `digits[i] < 9` — if the digit is not `9`, simply increment and return immediately, no carry needed
-- `digits[i] = 0` — if the digit is `9`, it becomes `0` and the carry propagates to the left
-- `digits.insert(0, 1)` — only reached when all digits were `9` (e.g., `[9,9,9]` → `[1,0,0,0]`), inserts `1` at the front
-- **Logic:** Walk from right to left. If no carry, return early. If all digits carry over, prepend `1`
+Key Rust Concepts:
 
-**Complexity:**
-- ⏱ Time: O(n) — at most one full pass through the array
-- 💾 Space: O(1) — in-place for most cases, O(n) only when all digits are `9`
 
----
+mut digits: Vec<i32> — takes ownership of the vector and makes it mutable directly in the parameter, no need for &mut
+(0..n).rev() — iterates from the last index to 0, since we always start adding from the rightmost digit
+digits[i] < 9 — if the digit is not 9, simply increment and return immediately, no carry needed
+digits[i] = 0 — if the digit is 9, it becomes 0 and the carry propagates to the left
+digits.insert(0, 1) — only reached when all digits were 9 (e.g., [9,9,9] → [1,0,0,0]), inserts 1 at the front
+Logic: Walk from right to left. If no carry, return early. If all digits carry over, prepend 1
 
-### 70. Climbing Stairs
-**Problem:** You are climbing a staircase. It takes `n` steps to reach the top. Each time you can either climb `1` or `2` steps. In how many distinct ways can you climb to the top?
 
-```rust
-impl Solution {
+Complexity:
+
+
+⏱ Time: O(n) — at most one full pass through the array
+💾 Space: O(1) — in-place for most cases, O(n) only when all digits are 9
+
+
+
+70. Climbing Stairs
+
+Problem: You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+
+rustimpl Solution {
     pub fn climb_stairs(n: i32) -> i32 {
         if n <= 2 {
             return n;
@@ -389,27 +459,31 @@ impl Solution {
         second
     }
 }
-```
 
-**Key Rust Concepts:**
-- `if n <= 2 { return n; }` — early return handles the base cases: 1 step → 1 way, 2 steps → 2 ways
-- `let mut first = 1` / `let mut second = 2` — rolling variables track the previous two Fibonacci-like values, avoiding an array
-- `3..=n` — inclusive range starting from `3`, since the first two cases are already handled
-- `for _ in ...` — the loop variable is discarded with `_` because only the iteration count matters, not the index value
-- `let current = first + second` — computes the next value before updating, preventing overwrite issues
-- **Fibonacci pattern** — the number of ways to reach step `n` equals ways to reach `n-1` plus ways to reach `n-2`, identical to the Fibonacci sequence
+Key Rust Concepts:
 
-**Complexity:**
-- ⏱ Time: O(n) — single pass from step 3 to n
-- 💾 Space: O(1) — only two variables used regardless of input size
 
----
+if n <= 2 { return n; } — early return handles the base cases: 1 step → 1 way, 2 steps → 2 ways
+let mut first = 1 / let mut second = 2 — rolling variables track the previous two Fibonacci-like values, avoiding an array
+3..=n — inclusive range starting from 3, since the first two cases are already handled
+for _ in ... — the loop variable is discarded with _ because only the iteration count matters, not the index value
+let current = first + second — computes the next value before updating, preventing overwrite issues
+Fibonacci pattern — the number of ways to reach step n equals ways to reach n-1 plus ways to reach n-2, identical to the Fibonacci sequence
 
-### 83. Remove Duplicates from Sorted List
-**Problem:** Given the `head` of a sorted linked list, delete all duplicates such that each element appears only once. Return the linked list sorted as well.
 
-```rust
-impl Solution {
+Complexity:
+
+
+⏱ Time: O(n) — single pass from step 3 to n
+💾 Space: O(1) — only two variables used regardless of input size
+
+
+
+83. Remove Duplicates from Sorted List
+
+Problem: Given the head of a sorted linked list, delete all duplicates such that each element appears only once. Return the linked list sorted as well.
+
+rustimpl Solution {
     pub fn delete_duplicates(mut head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
         let mut current = head.as_mut();
 
@@ -426,28 +500,32 @@ impl Solution {
         head
     }
 }
-```
 
-**Key Rust Concepts:**
-- `mut head: Option<Box<ListNode>>` — takes ownership of the list and makes it mutable; no dummy node needed since we return `head` directly
-- `head.as_mut()` — borrows a mutable reference to the inner `Box<ListNode>` without consuming the `Option`, so `head` can still be returned at the end
-- `while let Some(node) = current` — outer loop walks forward through the list one unique node at a time
-- `while let Some(next_node) = node.next.as_mut()` — inner loop keeps peeking at the immediate successor without advancing `current` yet
-- `node.next = next_node.next.take()` — `.take()` moves the node after the duplicate out of its `Option` (leaving `None`) and splices it in as the new `next`, effectively unlinking the duplicate in a single safe operation
-- `break` — exits the inner loop as soon as a non-duplicate neighbour is found, then the outer loop advances `current`
-- **In-place surgery** — no new nodes are allocated; only `next` pointers are rewired, keeping space O(1)
+Key Rust Concepts:
 
-**Complexity:**
-- ⏱ Time: O(n) — every node is visited at most twice (once by the outer loop, once by the inner)
-- 💾 Space: O(1) — pointer manipulation only, no auxiliary data structures
 
----
+mut head: Option<Box<ListNode>> — takes ownership of the list and makes it mutable; no dummy node needed since we return head directly
+head.as_mut() — borrows a mutable reference to the inner Box<ListNode> without consuming the Option, so head can still be returned at the end
+while let Some(node) = current — outer loop walks forward through the list one unique node at a time
+while let Some(next_node) = node.next.as_mut() — inner loop keeps peeking at the immediate successor without advancing current yet
+node.next = next_node.next.take() — .take() moves the node after the duplicate out of its Option (leaving None) and splices it in as the new next, effectively unlinking the duplicate in a single safe operation
+break — exits the inner loop as soon as a non-duplicate neighbour is found, then the outer loop advances current
+In-place surgery — no new nodes are allocated; only next pointers are rewired, keeping space O(1)
 
-### 100. Same Tree
-**Problem:** Given the roots of two binary trees `p` and `q`, write a function to check if they are the same or not. Two binary trees are considered the same if they are structurally identical, and the nodes have the same value.
 
-```rust
-use std::rc::Rc;
+Complexity:
+
+
+⏱ Time: O(n) — every node is visited at most twice (once by the outer loop, once by the inner)
+💾 Space: O(1) — pointer manipulation only, no auxiliary data structures
+
+
+
+100. Same Tree
+
+Problem: Given the roots of two binary trees p and q, write a function to check if they are the same or not. Two binary trees are considered the same if they are structurally identical, and the nodes have the same value.
+
+rustuse std::rc::Rc;
 use std::cell::RefCell;
 
 impl Solution {
@@ -469,39 +547,73 @@ impl Solution {
         }
     }
 }
-```
 
-**Key Rust Concepts:**
-- `Rc<RefCell<TreeNode>>` — LeetCode's standard tree node type in Rust. `Rc` enables shared ownership, `RefCell` enables interior mutability (runtime borrow checking)
-- `match (p, q)` — pattern matches on both nodes simultaneously, covering all 3 cases cleanly
-- `(None, None) => true` — both nodes are absent, trees match at this position ✅
-- `_ => false` — one is `Some` and the other is `None`, structural mismatch ❌
-- `.borrow()` — `RefCell`'s method to get a shared read reference to the inner value at runtime
-- `.clone()` — required to pass child nodes into recursive calls since `Rc` clone is cheap (just increments reference count)
-- **Recursion** — checks current node values, then recursively verifies left and right subtrees
+Key Rust Concepts:
 
-**Complexity:**
-- ⏱ Time: O(n) — every node in both trees is visited once
-- 💾 Space: O(h) — call stack depth equals tree height `h`. O(log n) for balanced trees, O(n) worst case for skewed trees
 
----
+Rc<RefCell<TreeNode>> — LeetCode's standard tree node type in Rust. Rc enables shared ownership, RefCell enables interior mutability (runtime borrow checking)
+match (p, q) — pattern matches on both nodes simultaneously, covering all 3 cases cleanly
+(None, None) => true — both nodes are absent, trees match at this position ✅
+_ => false — one is Some and the other is None, structural mismatch ❌
+.borrow() — RefCell's method to get a shared read reference to the inner value at runtime
+.clone() — required to pass child nodes into recursive calls since Rc clone is cheap (just increments reference count)
+Recursion — checks current node values, then recursively verifies left and right subtrees
 
-## 🧠 Why Rust for LeetCode?
+
+Complexity:
+
+
+⏱ Time: O(n) — every node in both trees is visited once
+💾 Space: O(h) — call stack depth equals tree height h. O(log n) for balanced trees, O(n) worst case for skewed trees
+
+
+
+136. Single Number
+
+Problem: Given a non-empty array of integers nums, every element appears twice except for one. Find that single one. You must implement a solution with linear runtime complexity and use only constant extra space.
+
+rustimpl Solution {
+    pub fn single_number(nums: Vec<i32>) -> i32 {
+        nums.iter().fold(0, |acc, &num| acc ^ num)
+    }
+}
+
+Key Rust Concepts:
+
+
+.iter() — borrows each element of the vector, yielding &i32 references without consuming the vector
+.fold(0, |acc, &num| acc ^ num) — a functional reducer: starts with an accumulator of 0, then applies the closure to every element left-to-right, returning the final accumulated value
+|acc, &num| — the closure destructures the &i32 reference into num directly via pattern matching, so no explicit dereference is needed
+acc ^ num — XOR operator; the key mathematical insight is that x ^ x == 0 (any number XORed with itself cancels out) and x ^ 0 == x (XOR with zero is identity). Since every duplicate pair cancels, only the unique element survives
+XOR trick — effectively: 0 ^ a ^ b ^ b ^ a ^ c == c. Order doesn't matter because XOR is both commutative and associative
+
+
+Complexity:
+
+
+⏱ Time: O(n) — single pass through the array via fold
+💾 Space: O(1) — only the accumulator variable is used, no extra data structures
+
+
+
+🧠 Why Rust for LeetCode?
+
 Rust is an unusual but powerful choice for competitive problem solving:
 
-- ⚡ **Performance** — comparable to C/C++ with zero-cost abstractions
-- 🔒 **Memory Safety** — the borrow checker prevents bugs at compile time
-- 🦾 **Strong Type System** — forces you to think clearly about data and ownership
-- 📚 **Great for Learning** — solving LeetCode in Rust deepens your understanding of systems programming concepts
 
-## 🚀 How to Run
-```bash
-# Clone the repo
+⚡ Performance — comparable to C/C++ with zero-cost abstractions
+🔒 Memory Safety — the borrow checker prevents bugs at compile time
+🦾 Strong Type System — forces you to think clearly about data and ownership
+📚 Great for Learning — solving LeetCode in Rust deepens your understanding of systems programming concepts
+
+
+🚀 How to Run
+
+bash# Clone the repo
 git clone https://github.com/AhmedHawash321/leetcode-rust.git
 cd leetcode-rust
 
 # Run a specific solution
 rustc two_sum.rs && ./two_sum
-```
 
-*Solutions are added regularly. Feel free to open an issue or PR if you spot improvements!*
+Solutions are added regularly. Feel free to open an issue or PR if you spot improvements!
