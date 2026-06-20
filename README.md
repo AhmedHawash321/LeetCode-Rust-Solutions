@@ -6,6 +6,7 @@ A collection of LeetCode self solutions written in Rust, focusing on clean code,
 |---|---------|------------|-----------------|------------------|----------|
 | 1 | Two Sum | 🟢 Easy | O(n²) | O(1) | [View](#1-two-sum) |
 | 13 | Roman to Integer | 🟢 Easy | O(n) | O(1) | [View](#13-roman-to-integer) |
+| 14 | Longest Common Prefix | 🟢 Easy | O(n·m) | O(1) | [View](#14-longest-common-prefix) |
 | 20 | Valid Parentheses | 🟢 Easy | O(n) | O(n) | [View](#20-valid-parentheses) |
 | 21 | Merge Two Sorted Lists | 🟢 Easy | O(n + m) | O(1) | [View](#21-merge-two-sorted-lists) |
 | 26 | Remove Duplicates from Sorted Array | 🟢 Easy | O(n) | O(1) | [View](#26-remove-duplicates-from-sorted-array) |
@@ -16,6 +17,7 @@ A collection of LeetCode self solutions written in Rust, focusing on clean code,
 | 66 | Plus One | 🟢 Easy | O(n) | O(1) | [View](#66-plus-one) |
 | 70 | Climbing Stairs | 🟢 Easy | O(n) | O(1) | [View](#70-climbing-stairs) |
 | 83 | Remove Duplicates from Sorted List | 🟢 Easy | O(n) | O(1) | [View](#83-remove-duplicates-from-sorted-list) |
+| 94 | Binary Tree Inorder Traversal | 🟢 Easy | O(n) | O(h) | [View](#94-binary-tree-inorder-traversal) |
 | 100 | Same Tree | 🟢 Easy | O(n) | O(h) | [View](#100-same-tree) |
 | 136 | Single Number | 🟢 Easy | O(n) | O(1) | [View](#136-single-number) |
 
@@ -25,6 +27,7 @@ leetcode-rust/
 ├── README.md
 ├── two_sum.rs
 ├── roman_to_integer.rs
+├── longest_common_prefix.rs
 ├── valid_parentheses.rs
 ├── merge_two_lists.rs
 ├── remove_duplicates.rs
@@ -35,6 +38,7 @@ leetcode-rust/
 ├── plus_one.rs
 ├── climb_stairs.rs
 ├── delete_duplicates.rs
+├── inorder_traversal.rs
 ├── same_tree.rs
 └── single_number.rs
 ```
@@ -122,6 +126,47 @@ impl Solution {
 **Complexity:**
 - ⏱ Time: O(n) — single pass through the string
 - 💾 Space: O(1) — only a few integer variables used
+
+---
+
+### 14. Longest Common Prefix
+**Problem:** Write a function to find the longest common prefix string amongst an array of strings. If there is no common prefix, return an empty string `""`.
+
+```rust
+impl Solution {
+    pub fn longest_common_prefix(strs: Vec<String>) -> String {
+        if strs.is_empty() {
+            return String::new();
+        }
+
+        let mut prefix = &strs[0][..];
+
+        for string in strs.iter().skip(1) {
+            while !string.starts_with(prefix) {
+                prefix = &prefix[0..prefix.len() - 1];
+
+                if prefix.is_empty() {
+                    return String::new()
+                }
+            }
+        }
+        prefix.to_string()
+    }
+}
+```
+
+**Key Rust Concepts:**
+- `&strs[0][..]` — takes a string slice (`&str`) of the entire first string; this becomes the starting candidate prefix before being trimmed down
+- `strs.iter().skip(1)` — iterates over the remaining strings, skipping the first one since it's already the initial `prefix` candidate
+- `.starts_with(prefix)` — checks if the current string begins with the candidate prefix; `&str` makes this a single built-in call instead of manual character comparison
+- `&prefix[0..prefix.len() - 1]` — string slicing shrinks the prefix by one character from the right each time there's a mismatch
+- `prefix.is_empty()` — early exit guard; once the prefix shrinks to nothing, no common prefix exists across all strings
+- `prefix.to_string()` — converts the final `&str` slice into an owned `String` for the return type
+- **Shrinking Window pattern** — instead of comparing character by character, the candidate prefix progressively shrinks from the right until every string matches it
+
+**Complexity:**
+- ⏱ Time: O(n·m) — `n` strings are checked, and in the worst case the prefix shrinks character by character (`m` = length of the first string)
+- 💾 Space: O(1) — only a slice reference is kept; no new strings are allocated until the final `.to_string()`
 
 ---
 
@@ -485,6 +530,52 @@ impl Solution {
 **Complexity:**
 - ⏱ Time: O(n) — every node is visited at most twice (once by the outer loop, once by the inner)
 - 💾 Space: O(1) — pointer manipulation only, no auxiliary data structures
+
+---
+
+### 94. Binary Tree Inorder Traversal
+**Problem:** Given the `root` of a binary tree, return the inorder traversal of its nodes' values.
+
+```rust
+use std::rc::Rc;
+use std::cell::RefCell;
+
+impl Solution {
+    pub fn inorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+        let mut result = Vec::new();
+        Self::traverse(&root, &mut result);
+        result
+    }
+
+    fn traverse(node: &Option<Rc<RefCell<TreeNode>>>, result: &mut Vec<i32>) {
+        if let Some(current) = node {
+            let current_borrow = current.borrow();
+
+            // Left first
+            Self::traverse(&current_borrow.left, result);
+
+            // Current node
+            result.push(current_borrow.val);
+
+            // Right last
+            Self::traverse(&current_borrow.right, result);
+        }
+    }
+}
+```
+
+**Key Rust Concepts:**
+- `Option<Rc<RefCell<TreeNode>>>` — LeetCode's standard tree node type; `Rc` allows shared ownership of nodes, `RefCell` allows borrowing the inner value at runtime
+- `&Option<Rc<RefCell<TreeNode>>>` — the helper function takes a reference instead of ownership, so the same node can be inspected without moving it out of the tree structure
+- `&mut Vec<i32>` — passes the result vector by mutable reference so every recursive call can push into the same accumulator instead of returning and merging vectors
+- `if let Some(current) = node` — pattern matches only the `Some` case; `None` (an empty subtree) falls through and the function simply returns, acting as the base case for recursion
+- `.borrow()` — `RefCell`'s method to get a shared read-only reference to the node's fields at runtime
+- `result.push(current_borrow.val)` — the position of this line between the two recursive calls is what defines **inorder**: left subtree, then current node, then right subtree
+- **Recursion with accumulator** — rather than building and concatenating `Vec`s at every level (which would allocate repeatedly), a single mutable `Vec` is threaded through all recursive calls
+
+**Complexity:**
+- ⏱ Time: O(n) — every node in the tree is visited exactly once
+- 💾 Space: O(h) — call stack depth equals tree height `h` (excluding the O(n) result vector, which is required output, not auxiliary space). O(log n) for balanced trees, O(n) worst case for skewed trees
 
 ---
 
