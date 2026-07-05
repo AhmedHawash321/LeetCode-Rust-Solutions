@@ -20,6 +20,7 @@ A collection of LeetCode self solutions written in Rust, focusing on clean code,
 | 94 | Binary Tree Inorder Traversal | 🟢 Easy | O(n) | O(h) | [View](#94-binary-tree-inorder-traversal) |
 | 100 | Same Tree | 🟢 Easy | O(n) | O(h) | [View](#100-same-tree) |
 | 136 | Single Number | 🟢 Easy | O(n) | O(1) | [View](#136-single-number) |
+| 168 | Excel Sheet Column Title | 🟢 Easy | O(log n) | O(log n) | [View](#168-excel-sheet-column-title) |
 
 ## 🗂️ Structure
 ```
@@ -40,7 +41,8 @@ leetcode-rust/
 ├── delete_duplicates.rs
 ├── inorder_traversal.rs
 ├── same_tree.rs
-└── single_number.rs
+├── single_number.rs
+└── excel_column_title.rs
 ```
 
 ---
@@ -643,6 +645,46 @@ impl Solution {
 **Complexity:**
 - ⏱ Time: O(n) — single pass through the array via `fold`
 - 💾 Space: O(1) — only the accumulator variable is used, no extra data structures
+
+---
+
+### 168. Excel Sheet Column Title
+**Problem:** Given an integer `column_number`, return its corresponding column title as it appears in an Excel sheet (e.g. 1 → "A", 26 → "Z", 27 → "AA", 28 → "AB").
+
+```rust
+impl Solution {
+    pub fn convert_to_title(mut column_number: i32) -> String {
+        let mut result = String::new();
+
+        while column_number > 0 {
+            column_number -= 1;
+
+            let reminder = (column_number % 26) as u8;
+
+            let c = (b'A' + reminder) as char;
+
+            result.push(c);
+
+            column_number /= 26;
+        }
+        result.chars().rev().collect()
+    }
+}
+```
+
+**Key Rust Concepts:**
+- `mut column_number: i32` — takes ownership and marks the parameter as mutable so it can be modified in-place inside the loop without a separate variable
+- `column_number -= 1` — the critical adjustment that converts 1-based Excel indexing to 0-based; without this, 26 would map to nothing instead of `'Z'` and 27 would give `'A'` instead of `'AA'`
+- `(column_number % 26) as u8` — computes the current digit (0–25) in base-26 and casts it to `u8` so it can be used in byte arithmetic
+- `b'A'` — a **byte literal** in Rust, equivalent to `65u8`; adding the remainder to it gives the ASCII code of the target letter
+- `(b'A' + reminder) as char` — casts the computed `u8` byte value back to a `char`; this is safe here because the result is always a valid ASCII uppercase letter
+- `result.push(c)` — builds the string in reverse order (least significant digit first), because the remainder at each step is the rightmost letter
+- `result.chars().rev().collect()` — reverses the accumulated characters and collects them into a new `String`; `.collect::<String>()` is inferred from the return type
+- **Base-26 with offset** — unlike standard base conversion, Excel columns have no zero digit; the `column_number -= 1` shift at each iteration compensates for this, making the mapping bijective
+
+**Complexity:**
+- ⏱ Time: O(log n) — the number of iterations equals the number of digits in the base-26 representation of `column_number`
+- 💾 Space: O(log n) — the result string holds one character per base-26 digit
 
 ---
 
