@@ -19,8 +19,8 @@ A collection of LeetCode self solutions written in Rust, focusing on clean code,
 | 83 | Remove Duplicates from Sorted List | 🟢 Easy | O(n) | O(1) | [View](#83-remove-duplicates-from-sorted-list) |
 | 94 | Binary Tree Inorder Traversal | 🟢 Easy | O(n) | O(h) | [View](#94-binary-tree-inorder-traversal) |
 | 100 | Same Tree | 🟢 Easy | O(n) | O(h) | [View](#100-same-tree) |
-| 125 | Valid Palindrome | 🟢 Easy | O(n) | O(n) | [View](#125-valid-palindrome) |
 | 136 | Single Number | 🟢 Easy | O(n) | O(1) | [View](#136-single-number) |
+| 167 | Two Sum II - Input Array Is Sorted | 🟢 Easy | O(n) | O(1) | [View](#167-two-sum-ii---input-array-is-sorted) |
 | 168 | Excel Sheet Column Title | 🟢 Easy | O(log n) | O(log n) | [View](#168-excel-sheet-column-title) |
  
 ## 🗂️ Structure
@@ -42,8 +42,8 @@ leetcode-rust/
 ├── delete_duplicates.rs
 ├── inorder_traversal.rs
 ├── same_tree.rs
-├── valid_palindrome.rs
 ├── single_number.rs
+├── two_sum_ii.rs
 └── excel_column_title.rs
 ```
  
@@ -596,51 +596,6 @@ impl Solution {
 - 💾 Space: O(h) — call stack depth equals tree height `h`. O(log n) for balanced trees, O(n) worst case for skewed trees
 ---
  
-### 125. Valid Palindrome
-**Problem:** Given a string `s`, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.
- 
-```rust
-impl Solution {
-    pub fn is_palindrome(s: String) -> bool {
-        let chars: Vec<char> = s.chars().collect();
-        if chars.is_empty() {
-            return true;
-        }
-        let mut left = 0;
-        let mut right = chars.len() - 1;
-        while left < right {
-            if !chars[left].is_alphanumeric() {
-                left += 1;
-            }
-            else if !chars[right].is_alphanumeric() {
-                right -= 1;
-            }
-            else {
-                if chars[left].to_ascii_lowercase() != chars[right].to_ascii_lowercase() {
-                    return false; 
-                }       
-                left += 1;
-                right -= 1;
-            }
-        }
-        true 
-    }
-}
-```
- 
-**Key Rust Concepts:**
-- `s.chars().collect()` — collects the string into a `Vec<char>` up front so both ends can be indexed and walked with two pointers; iterating `&str` directly doesn't support easy indexing from both sides
-- `chars.is_empty()` — guard for the empty string case, trivially a palindrome
-- `let mut right = chars.len() - 1` — starts the right pointer at the last valid index; safe here because the empty case was already handled, avoiding a `usize` underflow
-- `.is_alphanumeric()` — checks whether a `char` is a letter or digit, used to skip over punctuation, spaces, and other non-alphanumeric characters
-- `left += 1` / `right -= 1` inside separate `if`/`else if` branches — each pointer only advances past a non-alphanumeric character on its own side, independently of the other pointer
-- `.to_ascii_lowercase()` — normalizes case before comparing, so `'A'` and `'a'` are treated as equal
-- **Two Pointers pattern** — `left` and `right` converge toward the middle, skipping invalid characters and comparing valid ones until they cross or a mismatch is found
-**Complexity:**
-- ⏱ Time: O(n) — each character is visited at most once as the two pointers move toward the center
-- 💾 Space: O(n) — the `Vec<char>` collected from the string holds one entry per character
----
- 
 ### 136. Single Number
 **Problem:** Given a non-empty array of integers `nums`, every element appears twice except for one. Find that single one. You must implement a solution with linear runtime complexity and use only constant extra space.
  
@@ -661,6 +616,42 @@ impl Solution {
 **Complexity:**
 - ⏱ Time: O(n) — single pass through the array via `fold`
 - 💾 Space: O(1) — only the accumulator variable is used, no extra data structures
+---
+ 
+### 167. Two Sum II - Input Array Is Sorted
+**Problem:** Given a 1-indexed array of integers `numbers` that is already sorted in non-decreasing order, find two numbers such that they add up to a specific `target`. Return their indices (1-indexed) as `[index1, index2]`. You may not use the same element twice, and there is exactly one solution.
+ 
+```rust
+impl Solution {
+    pub fn two_sum(numbers: Vec<i32>, target: i32) -> Vec<i32> {
+        let mut left = 0;
+        let mut right = numbers.len() - 1;
+ 
+        while left < right {
+            let current_sum = numbers[left] + numbers[right];
+ 
+            if current_sum == target {
+                return vec![(left + 1) as i32, (right + 1) as i32];
+            } else if current_sum < target {
+                left += 1;
+            } else {
+                right -= 1;
+            }
+        }
+        vec![]
+    }
+}
+```
+ 
+**Key Rust Concepts:**
+- `numbers.len() - 1` — `len()` returns `usize`; this is safe here because the problem guarantees at least two elements, so the subtraction never underflows
+- `let current_sum = numbers[left] + numbers[right]` — stores the sum in a named variable for clarity and to avoid evaluating the expression twice in the `if`/`else if` chain
+- `(left + 1) as i32` / `(right + 1) as i32` — converts `usize` indices to `i32` and adds `1` to each to convert from 0-based to the required 1-based output format
+- `vec![]` — returned if no solution is found, though per the problem constraints this branch is never reached
+- **Two Pointers on sorted input** — because the array is sorted, if `current_sum < target` the only way to increase it is to advance `left` (larger value), and if `current_sum > target` the only way to decrease it is to retreat `right` (smaller value). This eliminates the need for a hash map and keeps space O(1), unlike the classic Two Sum (problem 1)
+**Complexity:**
+- ⏱ Time: O(n) — the two pointers together traverse the array at most once, moving a total of `n - 1` steps
+- 💾 Space: O(1) — only two index variables and a temporary sum; no extra data structures used
 ---
  
 ### 168. Excel Sheet Column Title
