@@ -20,7 +20,7 @@ A collection of LeetCode self solutions written in Rust, focusing on clean code,
 | 94 | Binary Tree Inorder Traversal | 🟢 Easy | O(n) | O(h) | [View](#94-binary-tree-inorder-traversal) |
 | 100 | Same Tree | 🟢 Easy | O(n) | O(h) | [View](#100-same-tree) |
 | 136 | Single Number | 🟢 Easy | O(n) | O(1) | [View](#136-single-number) |
-| 167 | Two Sum II - Input Array Is Sorted | 🟢 Easy | O(n) | O(1) | [View](#167-two-sum-ii---input-array-is-sorted) |
+| 167 | Two Sum II - Input Array Is Sorted | 🟡 Medium | O(n) | O(1) | [View](#167-two-sum-ii---input-array-is-sorted) |
 | 168 | Excel Sheet Column Title | 🟢 Easy | O(log n) | O(log n) | [View](#168-excel-sheet-column-title) |
  
 ## 🗂️ Structure
